@@ -4,10 +4,12 @@ import (
 	"golang.design/x/clipboard"
 )
 
-func InitClipboard() {
+func (a *App) InitClipboard() string {
 
 	err := clipboard.Init()
 	if err != nil {
 		panic(err)
 	}
+
+	return "From backend"
 }

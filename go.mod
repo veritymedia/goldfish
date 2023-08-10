@@ -1,4 +1,4 @@
-module changeme
+module github.com/veritymedia/goldfish
 
 go 1.18
 
