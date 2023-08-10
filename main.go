@@ -16,13 +16,19 @@ func main() {
 	// Create an instance of the app structure
 	app := NewApp()
 
+	/* TODO: on first launch, ask if user want app to run
+	hidden in system tray. Show instructions to reset this as some
+	os (like zorin) dont have a bloody system tray, making my life a pain.
+
+	*/
+
 	// Create application with options
 	err := wails.Run(&options.App{
-		Title:     "Goldfish",
-		Width:     1024,
-		Height:    1024,
-		Frameless: true,
-
+		Title:       "Goldfish",
+		Width:       800,
+		Height:      600,
+		Frameless:   true,
+		StartHidden: true,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},

@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/f1bonacc1/glippy"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -17,9 +16,11 @@ type ClipboardMessage struct {
 func (a *App) StartClipboardWatcher() {
 	ch := glippy.Watch(context.Background())
 
+	// TODO: Show the window from which the text came from
+	// https://github.com/jezek/xgb/blob/master/examples/get-active-window/main.go
+
 	// list := []string{}
 	for data := range ch {
-		fmt.Println(data)
 		if data != "" {
 			a.EmmitClipboardText(&ClipboardMessage{Status: "ok", Text: data, Message: ""})
 		} else {
