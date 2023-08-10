@@ -2,7 +2,10 @@ module changeme
 
 go 1.18
 
-require github.com/wailsapp/wails/v2 v2.5.1
+require (
+	github.com/wailsapp/wails/v2 v2.5.1
+	golang.design/x/clipboard v0.7.0
+)
 
 require (
 	github.com/bep/debounce v1.2.1 // indirect
@@ -25,9 +28,12 @@ require (
 	github.com/wailsapp/mimetype v1.4.1 // indirect
 	golang.org/x/crypto v0.1.0 // indirect
 	golang.org/x/exp v0.0.0-20220303212507-bbda1eaf7a17 // indirect
+	golang.org/x/exp/shiny v0.0.0-20230810033253-352e893a4cad // indirect
+	golang.org/x/image v0.6.0 // indirect
+	golang.org/x/mobile v0.0.0-20230301163155-e0f57694e12c // indirect
 	golang.org/x/net v0.7.0 // indirect
 	golang.org/x/sys v0.5.0 // indirect
-	golang.org/x/text v0.7.0 // indirect
+	golang.org/x/text v0.8.0 // indirect
 )
 
 // replace github.com/wailsapp/wails/v2 v2.5.1 => /home/yegor/go/pkg/mod
