@@ -1,19 +1,25 @@
-<h1 class="text-[red]">Welcome to SvelteKit</h1>
-<p>{fromBackend}</p>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script lang="ts">
+	import { EventsOn } from '../lib/wailsjs/runtime/runtime.js';
+	import type { main } from '../lib/wailsjs/go/models.js';
+	// import { StartClipboardWatcher } from "../lib/wailsjs/go/main/App.js"
 
+	let clipboardHistory: main.ClipboardMessage[] = [];
 
-<script>
-import {InitClipboard} from "../lib/wailsjs/go/main/App.js"
-
-let fromBackend = "Loading..."
-
-function loadFromBackend() {
-    InitClipboard().then((result) => {
-        fromBackend = result
-    })
-}
-
-loadFromBackend()
-
+	EventsOn('newTextData', (data: main.ClipboardMessage) => {
+		console.log('newTextData', data);
+		clipboardHistory.push(data);
+		clipboardHistory = clipboardHistory;
+		console.log(clipboardHistory);
+	});
 </script>
+
+<ul class="flex flex-col gap-3">
+	{#each clipboardHistory as entry}
+		<li>
+			<span class="font-bold text-green-500 uppercase">Copied text: </span>{entry.text}
+			STATUS: {entry.status}
+		</li>
+	{:else}
+		<li>No clipboard history yet</li>
+	{/each}
+</ul>
