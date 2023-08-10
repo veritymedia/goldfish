@@ -6,18 +6,20 @@
 	let clipboardHistory: main.ClipboardMessage[] = [];
 
 	EventsOn('newTextData', (data: main.ClipboardMessage) => {
-		console.log('newTextData', data);
 		clipboardHistory.push(data);
+		// I hate this. But the variable needs to be reassigned for svelte to update UI
+		// Alt: clipboardHistory = [...clipboardHistory, data]
 		clipboardHistory = clipboardHistory;
-		console.log(clipboardHistory);
 	});
 </script>
 
-<ul class="flex flex-col gap-3">
+<ul class="flex flex-col gap-3 fixed w-min-max left-1/2 top-1/2 -translate-x-1/2">
 	{#each clipboardHistory as entry}
-		<li>
+		<li class="flex gap-5">
 			<span class="font-bold text-green-500 uppercase">Copied text: </span>{entry.text}
-			STATUS: {entry.status}
+			<div class={entry.status === 'ok' ? 'bg-lime-500' : 'bg-amber-500'}>
+				STATUS: {entry.status}
+			</div>
 		</li>
 	{:else}
 		<li>No clipboard history yet</li>

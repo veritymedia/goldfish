@@ -22,6 +22,8 @@ func (a *App) StartClipboardWatcher() {
 		fmt.Println(data)
 		if data != "" {
 			a.EmmitClipboardText(&ClipboardMessage{Status: "ok", Text: data, Message: ""})
+		} else {
+			a.EmmitClipboardText(&ClipboardMessage{Status: "not-text", Message: "You copied something, but it wasnt text."})
 		}
 
 	}
