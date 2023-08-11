@@ -2,7 +2,9 @@ package main
 
 import (
 	"embed"
+	"fmt"
 
+	"github.com/veritymedia/goldfish/pkg/data"
 	"github.com/wailsapp/wails/v2"
 
 	"github.com/wailsapp/wails/v2/pkg/options"
@@ -13,6 +15,14 @@ import (
 var assets embed.FS
 
 func main() {
+	var err error
+
+	// TODO: All the stuff which should be done on first app launch.
+	err = data.InitialiseDb()
+	if err != nil {
+		fmt.Println("data.InitialiseDb FAILED")
+	}
+	// defer data.Pool.Close()
 
 	// str := utils.DataDir()
 	// Create an instance of the app structure
@@ -25,7 +35,7 @@ func main() {
 	*/
 
 	// Create application with options
-	err := wails.Run(&options.App{
+	err = wails.Run(&options.App{
 		Title:     "Goldfish",
 		Width:     800,
 		Height:    600,

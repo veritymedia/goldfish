@@ -49,7 +49,7 @@ func DataDir() string {
 		return ""
 	} else {
 		// TODO: May have to define compile time os based config. For separator
-		return homePath + pathSuffix + pathSeparator + config.AppName
+		return homePath + pathSuffix + pathSeparator + config.AppName + pathSeparator
 	}
 
 }
