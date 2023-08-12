@@ -98,6 +98,7 @@ func runDbMigrations(db *sql.DB) error {
 
 	err = m.Up()
 	if err != nil && err != migrate.ErrNoChange {
+		fmt.Println("ERROR migration failed: ", err)
 		return err
 	}
 
