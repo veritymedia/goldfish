@@ -29,12 +29,13 @@ func main() {
 	}
 	// defer data.Pool.Close()
 
-	models := Models{
+	dbModels := Models{
 		ClipboardItem: models.ClipboardItemModel{DB: db},
 	}
 
 	// Create an instance of the app structure
-	app := NewApp(models)
+	app := NewApp()
+	env := NewEnv(&dbModels)
 
 	// Create application with options
 	err = wails.Run(&options.App{
@@ -52,6 +53,7 @@ func main() {
 		OnDomReady:       app.domready,
 		Bind: []interface{}{
 			app,
+			env,
 		},
 	})
 

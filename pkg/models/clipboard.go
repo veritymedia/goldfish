@@ -14,7 +14,7 @@ type ClipboardItemModel struct {
 	DB *sql.DB
 }
 
-// Use a method on the custom BookModel type to run the SQL query.
+// Use a method on the custom ClipboardModel type to run the SQL query.
 func (m ClipboardItemModel) All() ([]ClipboardItem, error) {
 	rows, err := m.DB.Query("SELECT * FROM clipboard_items")
 	if err != nil {

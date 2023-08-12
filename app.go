@@ -7,15 +7,24 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
-// App struct
-type App struct {
+type Env struct {
 	ctx    context.Context
 	Models *Models
 }
 
+func NewEnv(models *Models) *Env {
+	return &Env{Models: models}
+}
+
+// App struct
+type App struct {
+	ctx context.Context
+}
+
 // NewApp creates a new App application struct
-func NewApp(env Models) *App {
-	return &App{Models: &env}
+func NewApp() *App {
+	return &App{}
+	// return &App{Models: &env}
 
 }
 
