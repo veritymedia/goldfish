@@ -33,21 +33,8 @@ func main() {
 		ClipboardItem: models.ClipboardItemModel{DB: db},
 	}
 
-	// str := utils.DataDir()
 	// Create an instance of the app structure
 	app := NewApp(models)
-
-	/* TODO: on first launch, ask if user want app to run
-	hidden in system tray. Show instructions to reset this as some
-	os (like zorin) dont have a bloody system tray, making my life a pain.
-
-	*/
-
-	// items, err := app.Models.ClipboardItem.All()
-	// if err != nil {
-	// 	fmt.Println("ERROR could not get items from DB.", err)
-	// }
-	// fmt.Println("SUCCESS DB: got data from db: ", items)
 
 	// Create application with options
 	err = wails.Run(&options.App{

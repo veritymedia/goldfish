@@ -5,8 +5,8 @@ import (
 )
 
 type ClipboardItem struct {
-	Content     string
-	DateCreated string
+	Content   string
+	CreatedAt string
 }
 
 // Create a custom ClipboardItemModel type which wraps the sql.DB connection pool.
@@ -27,7 +27,7 @@ func (m ClipboardItemModel) All() ([]ClipboardItem, error) {
 	for rows.Next() {
 		var item ClipboardItem
 
-		err := rows.Scan(&item.Content, &item.DateCreated)
+		err := rows.Scan(&item.Content, &item.CreatedAt)
 		if err != nil {
 			return nil, err
 		}

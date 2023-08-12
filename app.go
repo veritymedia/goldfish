@@ -16,6 +16,7 @@ type App struct {
 // NewApp creates a new App application struct
 func NewApp(env Models) *App {
 	return &App{Models: &env}
+
 }
 
 func (a *App) domready(ctx context.Context) {
