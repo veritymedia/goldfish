@@ -27,7 +27,7 @@ func (m ClipboardItemModel) All() ([]ClipboardItem, error) {
 	for rows.Next() {
 		var item ClipboardItem
 
-		err := rows.Scan(&item.Content)
+		err := rows.Scan(&item.Content, &item.DateCreated)
 		if err != nil {
 			return nil, err
 		}

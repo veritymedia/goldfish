@@ -9,12 +9,13 @@ import (
 
 // App struct
 type App struct {
-	ctx context.Context
+	ctx    context.Context
+	Models *Models
 }
 
 // NewApp creates a new App application struct
-func NewApp() *App {
-	return &App{}
+func NewApp(env Models) *App {
+	return &App{Models: &env}
 }
 
 func (a *App) domready(ctx context.Context) {

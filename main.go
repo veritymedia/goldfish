@@ -15,33 +15,39 @@ import (
 //go:embed all:frontend/build
 var assets embed.FS
 
-type Env struct {
-	clipboardItem models.ClipboardItemModel
+type Models struct {
+	ClipboardItem models.ClipboardItemModel
 }
 
 func main() {
 	var err error
 
 	// TODO: All the stuff which should be done on first app launch.
-	db, err = data.InitialiseDb()
+	db, err := data.InitialiseDb()
 	if err != nil {
 		fmt.Println("data.InitialiseDb FAILED")
 	}
 	// defer data.Pool.Close()
 
-	env := &Env{
-		clipboardItem: models.ClipboardItemModel{DB: db},
+	models := Models{
+		ClipboardItem: models.ClipboardItemModel{DB: db},
 	}
 
 	// str := utils.DataDir()
 	// Create an instance of the app structure
-	app := NewApp()
+	app := NewApp(models)
 
 	/* TODO: on first launch, ask if user want app to run
 	hidden in system tray. Show instructions to reset this as some
 	os (like zorin) dont have a bloody system tray, making my life a pain.
 
 	*/
+
+	// items, err := app.Models.ClipboardItem.All()
+	// if err != nil {
+	// 	fmt.Println("ERROR could not get items from DB.", err)
+	// }
+	// fmt.Println("SUCCESS DB: got data from db: ", items)
 
 	// Create application with options
 	err = wails.Run(&options.App{

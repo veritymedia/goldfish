@@ -1,5 +1,6 @@
 CREATE TABLE clipboard_items (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    content TEXT
-    date_created TEXT
+    id INT NOT NULL AUTO_INCREMENT,
+    content TEXT,
+    date_created TEXT,
+    PRIMARY KEY (id)
 );

@@ -24,30 +24,23 @@ var (
 	// Pool    *sql.DB
 )
 
-type Database struct {
-	Pool *sql.DB
-	// Clipboard ClipboardTextModel
-}
-
-var DbHandler = &Database{}
-
-func InitialiseDb() error {
-	err := connectDbPool()
+func InitialiseDb() (*sql.DB, error) {
+	db, err := connectDbPool()
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	// TODO: run migrations
-	err = runDbMigrations()
+	err = runDbMigrations(db)
 	if err != nil {
 		fmt.Println("Migration error: ", err)
-		return err
+		return nil, err
 	}
 	fmt.Println("SUCCESS: Migrations completed")
-	return nil
+	return db, nil
 }
 
-func connectDbPool() error {
+func connectDbPool() (*sql.DB, error) {
 	db, err := sql.Open("sqlite3", dbPath)
 
 	if err != nil {
@@ -58,26 +51,26 @@ func connectDbPool() error {
 
 	if err != nil {
 		fmt.Printf("DB 2nd connect retry failed. ")
-		return err
+		return nil, err
 	}
 
-	DbHandler = &Database{Pool: db}
-	fmt.Println("SUCCESS: connectDbPool(), &Pool ", DbHandler.Pool)
+	// DbHandler = &Database{Pool: db}
+	// fmt.Println("SUCCESS: connectDbPool(), &Pool ", DbHandler.Pool)
 	// Pool = db
 
-	err = DbHandler.Pool.Ping()
+	err = db.Ping()
 	if err != nil {
 		fmt.Println("ERROR: could not ping DB")
 		createDbFile()
 	}
 
-	err = DbHandler.Pool.Ping()
+	err = db.Ping()
 	if err != nil {
 		fmt.Println("ERROR: could not ping DB second time")
-		return err
+		return nil, err
 
 	}
-	return nil
+	return db, nil
 }
 
 func createDbFile() {
@@ -85,8 +78,8 @@ func createDbFile() {
 	os.Create(dbPath)
 }
 
-func runDbMigrations() error {
-	driver, err := sqlite.WithInstance(DbHandler.Pool, &sqlite.Config{})
+func runDbMigrations(db *sql.DB) error {
+	driver, err := sqlite.WithInstance(db, &sqlite.Config{})
 	if err != nil {
 		fmt.Println("ERROR could not create driver")
 		return err
