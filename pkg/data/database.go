@@ -21,8 +21,15 @@ var schemaFs embed.FS
 var (
 	dataDir = utils.DataDir()
 	dbPath  = dataDir + config.AppName + ".db"
-	Pool    *sql.DB
+	// Pool    *sql.DB
 )
+
+type Database struct {
+	Pool *sql.DB
+	// Clipboard ClipboardTextModel
+}
+
+var DbHandler = &Database{}
 
 func InitialiseDb() error {
 	err := connectDbPool()
@@ -53,18 +60,21 @@ func connectDbPool() error {
 		fmt.Printf("DB 2nd connect retry failed. ")
 		return err
 	}
-	fmt.Println("SUCCESS: connectDbPool(), &Pool ", &Pool)
-	Pool = db
 
-	err = Pool.Ping()
+	DbHandler = &Database{Pool: db}
+	fmt.Println("SUCCESS: connectDbPool(), &Pool ", DbHandler.Pool)
+	// Pool = db
+
+	err = DbHandler.Pool.Ping()
 	if err != nil {
 		fmt.Println("ERROR: could not ping DB")
 		createDbFile()
 	}
 
-	err = Pool.Ping()
+	err = DbHandler.Pool.Ping()
 	if err != nil {
 		fmt.Println("ERROR: could not ping DB second time")
+		return err
 
 	}
 	return nil
@@ -76,7 +86,7 @@ func createDbFile() {
 }
 
 func runDbMigrations() error {
-	driver, err := sqlite.WithInstance(Pool, &sqlite.Config{})
+	driver, err := sqlite.WithInstance(DbHandler.Pool, &sqlite.Config{})
 	if err != nil {
 		fmt.Println("ERROR could not create driver")
 		return err

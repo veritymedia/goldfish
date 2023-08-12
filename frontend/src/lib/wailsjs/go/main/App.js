@@ -6,10 +6,6 @@ export function EmmitClipboardText(arg1) {
   return window['go']['main']['App']['EmmitClipboardText'](arg1);
 }
 
-export function Greet(arg1) {
-  return window['go']['main']['App']['Greet'](arg1);
-}
-
 export function StartClipboardWatcher() {
   return window['go']['main']['App']['StartClipboardWatcher']();
 }
