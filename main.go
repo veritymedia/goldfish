@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"embed"
 	"fmt"
 
@@ -35,7 +36,7 @@ func main() {
 
 	// Create an instance of the app structure
 	app := NewApp()
-	env := NewEnv(&dbModels)
+	env := NewEnv(dbModels)
 
 	// Create application with options
 	err = wails.Run(&options.App{
@@ -49,8 +50,13 @@ func main() {
 			Assets: assets,
 		},
 		BackgroundColour: &options.RGBA{R: 27, G: 38, B: 54, A: 1},
-		OnStartup:        app.startup,
-		OnDomReady:       app.domready,
+		// OnStartup:        app.startup,
+		OnStartup: func(ctx context.Context) {
+			env.ctx = ctx
+			app.ctx = ctx
+			app.startClipboardWatcher()
+		},
+		OnDomReady: app.domready,
 		Bind: []interface{}{
 			app,
 			env,

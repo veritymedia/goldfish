@@ -5,8 +5,8 @@ import (
 )
 
 type ClipboardItem struct {
-	Content   string
-	CreatedAt string
+	Content   string `json:"content"`
+	CreatedAt string `json:"createdAt"`
 }
 
 // Create a custom ClipboardItemModel type which wraps the sql.DB connection pool.

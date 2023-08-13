@@ -1,6 +1,8 @@
-<script lang="ts">
+<script>
 	import { EventsOn } from '../lib/wailsjs/runtime/runtime.js';
-	import type { main } from '../lib/wailsjs/go/models.js';
+	// import type { main } from '../lib/wailsjs/go/models.js';
+
+	import { GetClipboardItems } from '../lib/wailsjs/go/main/Env.js';
 
 	import { EventsOnce } from '$lib/wailsjs/runtime/runtime.js';
 	import { goto } from '$app/navigation';
@@ -11,15 +13,27 @@
 
 	// import { StartClipboardWatcher } from "../lib/wailsjs/go/main/App.js"
 
-	let clipboardHistory: main.ClipboardMessage[] = [];
+	let clipboardHistory = [];
 
-	EventsOn('newTextData', (data: main.ClipboardMessage) => {
+	EventsOn('newTextData', (data) => {
 		clipboardHistory.push(data);
 		// I hate this. But the variable needs to be reassigned for svelte to update UI
 		// Alt: clipboardHistory = [...clipboardHistory, data]
 		clipboardHistory = clipboardHistory;
 	});
+
+	let allClips;
+
+	GetClipboardItems().then((clips) => {
+		console.log('clips: ', clips);
+		allClips = clips;
+	});
 </script>
+
+<div>
+	<h1>From DB:</h1>
+	<div>{allClips}</div>
+</div>
 
 <ul class="fixed flex flex-col gap-3 -translate-x-1/2 w-min-max left-1/2 top-1/2">
 	{#each clipboardHistory as entry}

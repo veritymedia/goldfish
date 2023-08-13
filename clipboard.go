@@ -13,7 +13,7 @@ type ClipboardMessage struct {
 	Message string `json:"message"`
 }
 
-func (a *App) StartClipboardWatcher() {
+func (a *App) startClipboardWatcher() {
 	ch := glippy.Watch(context.Background())
 
 	// TODO: Show the window from which the text came from
