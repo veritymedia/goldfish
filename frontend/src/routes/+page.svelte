@@ -1,46 +1,28 @@
 <script>
-	import { EventsOn } from '../lib/wailsjs/runtime/runtime.js';
-	// import type { main } from '../lib/wailsjs/go/models.js';
+	// import { EventsOn } from '../lib/wailsjs/runtime/runtime.js';
 
-	import { GetClipboardItems } from '../lib/wailsjs/go/main/Env.js';
-
-	import { EventsOnce } from '$lib/wailsjs/runtime/runtime.js';
-	import { goto } from '$app/navigation';
-	const firstTimeListener = EventsOnce('checkIsFirstLaunch', (isFirstLaunch) => {
-		console.log('isFirstLaunch: ', isFirstLaunch);
-		goto('/onboarding');
-	});
-
-	// import { StartClipboardWatcher } from "../lib/wailsjs/go/main/App.js"
+	import { GetAllClipboardItems } from '../lib/wailsjs/go/main/App.js';
 
 	let clipboardHistory = [];
 
-	EventsOn('newTextData', (data) => {
-		clipboardHistory.push(data);
-		// I hate this. But the variable needs to be reassigned for svelte to update UI
-		// Alt: clipboardHistory = [...clipboardHistory, data]
-		clipboardHistory = clipboardHistory;
+	GetAllClipboardItems().then((data) => {
+		clipboardHistory = data;
+		console.log(data);
 	});
 
-	let allClips;
+	// EventsOn('newTextData', (data) => {
+	// 	clipboardHistory.push(data);
 
-	GetClipboardItems().then((clips) => {
-		console.log('clips: ', clips);
-		allClips = clips;
-	});
+	// 	clipboardHistory = clipboardHistory;
+	// });
 </script>
-
-<div>
-	<h1>From DB:</h1>
-	<div>{allClips}</div>
-</div>
 
 <ul class="fixed flex flex-col gap-3 -translate-x-1/2 w-min-max left-1/2 top-1/2">
 	{#each clipboardHistory as entry}
 		<li class="flex gap-5 p-2 text-gray-100 bg-gray-800">
-			<span class="font-bold text-green-500 uppercase">Copied text: </span>{entry.text}
+			<span class="font-bold text-green-500 uppercase">Copied text: </span>{entry.content}
 			<div class={entry.status === 'ok' ? 'bg-lime-500' : 'bg-amber-500'}>
-				{entry.status}
+				{entry.createdAt}
 			</div>
 		</li>
 	{:else}

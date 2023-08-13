@@ -21,16 +21,19 @@ func (a *App) startClipboardWatcher() {
 
 	// list := []string{}
 	for data := range ch {
-		if data != "" {
-			a.EmmitClipboardText(&ClipboardMessage{Status: "ok", Text: data, Message: ""})
-		} else {
-			a.EmmitClipboardText(&ClipboardMessage{Status: "not-text", Message: "You copied something, but it wasnt text."})
-		}
+		a.Models.ClipboardItem.Set(data)
+		a.notifyClipboardUpdate()
+
+		// if data != "" {
+		// 	a.EmmitClipboardText(&ClipboardMessage{Status: "ok", Text: data, Message: ""})
+		// } else {
+		// 	a.EmmitClipboardText(&ClipboardMessage{Status: "not-text", Message: "You copied something, but it wasnt text."})
+		// }
 
 	}
 
 }
 
-func (a *App) EmmitClipboardText(message *ClipboardMessage) {
-	runtime.EventsEmit(a.ctx, "newTextData", *message)
+func (a *App) notifyClipboardUpdate() {
+	runtime.EventsEmit(a.ctx, "clipboard-update")
 }

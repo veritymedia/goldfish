@@ -9,13 +9,13 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
-type Env struct {
-	ctx    context.Context
-	Models Models
-}
+// type Env struct {
+// 	ctx    context.Context
+// 	Models Models
+// }
 
-func (e *Env) GetClipboardItems() ([]models.ClipboardItem, error) {
-	models, err := e.Models.ClipboardItem.All()
+func (a *App) GetAllClipboardItems() ([]models.ClipboardItem, error) {
+	models, err := a.Models.ClipboardItem.All()
 	if err != nil {
 		fmt.Println("ERROR: (*Env)GetClipboardItems: could not fetch from DB. ")
 		return nil, err
@@ -24,18 +24,35 @@ func (e *Env) GetClipboardItems() ([]models.ClipboardItem, error) {
 	return models, nil
 }
 
-func NewEnv(models Models) *Env {
-	return &Env{Models: models}
+func (a *App) GetLatestClipboardItem() ([]models.ClipboardItem, error) {
+	result, err := a.Models.ClipboardItem.GetLatest()
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
 }
+
+// func (e *App) SetClipboardItem() error {
+// 	err := e.Models.ClipboardItem.Set()
+// 	if err != nil {
+// 		return err
+// 	}
+// 	return nil
+// }
+
+// func NewEnv(models Models) *Env {
+// 	return &Env{Models: models}
+// }
 
 // App struct
 type App struct {
-	ctx context.Context
+	ctx    context.Context
+	Models Models
 }
 
 // NewApp creates a new App application struct
-func NewApp() *App {
-	return &App{}
+func NewApp(models Models) *App {
+	return &App{Models: models}
 }
 
 func (a *App) domready(ctx context.Context) {
