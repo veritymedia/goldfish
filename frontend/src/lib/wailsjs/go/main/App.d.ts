@@ -4,6 +4,8 @@ import {models} from '../models';
 
 export function DeleteAllClipboardItems():Promise<boolean>;
 
+export function DeleteOneByDateCreated(arg1:string):Promise<boolean>;
+
 export function GetAllClipboardItems():Promise<Array<models.ClipboardItem>>;
 
 export function GetLatestClipboardItem():Promise<Array<models.ClipboardItem>>;

@@ -26,14 +26,26 @@ func (m *ClipboardItemModel) DeleteAll() error {
 	return nil
 }
 
+func (m *ClipboardItemModel) DeleteByDateCreated(date string) error {
+	q := fmt.Sprintf("DELETE FROM clipboard_items WHERE created_at = '%s'", date)
+	_, err := m.DB.Exec(q)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (m *ClipboardItemModel) Set(content string) error {
 
 	timeNow := time.Now().Format(time.RFC3339)
 
-	q := fmt.Sprintf("INSERT INTO clipboard_items VALUES('%s', '%s')", content, timeNow)
+	q, err := m.DB.Prepare("INSERT INTO clipboard_items VALUES (?,?)")
+	if err != nil {
+		fmt.Println("ERROR: could not create parametarised query: ", err)
+	}
 	fmt.Println("CREATE query", q)
 
-	_, err := m.DB.Exec(q)
+	_, err = q.Exec(content, timeNow)
 	if err != nil {
 		return err
 	}

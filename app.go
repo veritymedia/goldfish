@@ -22,6 +22,14 @@ func (a *App) DeleteAllClipboardItems() bool {
 	return true
 }
 
+func (a *App) DeleteOneByDateCreated(date string) bool {
+	err := a.Models.ClipboardItem.DeleteByDateCreated(date)
+	if err != nil {
+		return false
+	}
+	return true
+}
+
 func (a *App) GetAllClipboardItems() ([]models.ClipboardItem, error) {
 	models, err := a.Models.ClipboardItem.GetAll()
 	if err != nil {

@@ -40,7 +40,7 @@ func main() {
 	app := NewApp(dbModels)
 	// env := NewEnv(dbModels)
 
-	fmt.Println("Icon bytes: ", appicon.AppIconBytes)
+	// fmt.Println("Icon bytes: ", appicon.AppIconBytes)
 
 	// Create application with options
 	err = wails.Run(&options.App{
