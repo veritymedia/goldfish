@@ -10,5 +10,12 @@
   "author": {
     "name": "Yegor Zakharov",
     "email": "yegor.zakharov99@gmail.com"
+  },
+  "Info": {
+    "companyName": "Yegor Zakharov",
+    "productName": "Goldfish",
+    "productVersion": "0.0.1",
+    "copyright": "",
+    "comments": "Built using Wails (https://wails.io)"
   }
 }
