@@ -6,8 +6,14 @@
 	import { ClipboardSetText } from '../lib/wailsjs/runtime/runtime.js';
 	import { DeleteOneByDateCreated } from '../lib/wailsjs/go/main/App.js';
 
-	function setClipboardText(text) {
-		ClipboardSetText(text);
+	function setClipboardText() {
+		DeleteOneByDateCreated(clip.createdAt).then((data) => {
+			if (data === true) {
+				dispatch('clipDeleted', { createdAt: clip.createdAt });
+			}
+			ClipboardSetText(clip.content);
+		});
+		// ClipboardSetText(text);
 	}
 
 	function deleteClipByDate() {
@@ -26,14 +32,18 @@
 	on:click={setClipboardText(clip.content)}
 	class="flex flex-col items-start justify-between gap-2 p-4 group text-dark rounded-xl hover:bg-light"
 >
-	<div class="text-xs">
-		<span class="pr-4 font-bold"
+	<div class="flex items-center h-6 text-xs">
+		<span class="pr-2 font-bold"
 			>{new Date(clip.createdAt).toLocaleTimeString('en-US', {
 				hour: 'numeric',
 				minute: 'numeric'
 			})}</span
 		>
-		<button on:click={deleteClipByDate} class="hidden group-hover:inline">delete clip</button>
+		<button
+			on:click={deleteClipByDate}
+			class="hidden h-full px-2 font-medium rounded-md hover:bg-highlight group-hover:inline"
+			>delete clip</button
+		>
 	</div>
 	<p class="text-overflow">
 		{clip.content}

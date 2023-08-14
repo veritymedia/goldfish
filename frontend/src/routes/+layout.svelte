@@ -5,5 +5,7 @@
 
 <div class=" bg-background">
 	<Header />
-	<slot />
+	<div class="px-2">
+		<slot />
+	</div>
 </div>

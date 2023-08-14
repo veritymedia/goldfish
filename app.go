@@ -14,6 +14,12 @@ import (
 // 	Models Models
 // }
 
+// func (a *App) RecopyClipboardItem(date string, content string) {
+// 	a.DeleteOneByDateCreated(date)
+// 	a.Models.ClipboardItem.Set(content)
+// 	runtime.ClipboardSetText(a.ctx, content)
+// }
+
 func (a *App) DeleteAllClipboardItems() bool {
 	err := a.Models.ClipboardItem.DeleteAll()
 	if err != nil {

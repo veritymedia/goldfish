@@ -1,18 +1,14 @@
 <script>
 	import Cliplist from '../components/cliplist.svelte';
-	import SettingsBlock from '../components/settings-block.svelte';
+	import SettingsIcon from '../components/icons/settings-icon.svelte';
+	import SettingsModal from '../components/settings-modal.svelte';
 	import { GetAllClipboardItems, GetLatestClipboardItem } from '../lib/wailsjs/go/main/App.js';
 	import { EventsOn } from '../lib/wailsjs/runtime/runtime.js';
 
-	// let allClips = [];
 	let itemsRaw = [];
-	// let itemsGroupedByDate = {};
 
 	GetAllClipboardItems().then((data) => {
-		// clipboardHistory = data;
-		console.log('data: ', data);
-
-		if (data.length === 0) {
+		if (data && data.length === 0) {
 			return;
 		}
 		itemsRaw = data;
@@ -34,10 +30,10 @@
 		return groups;
 	}, {});
 
-	function clearClips() {
+	function handleClipboardNuke() {
 		console.log('clearing clips');
-		clipboardHistory = [];
-		clipboardHistory = clipboardHistory;
+		itemsRaw = [];
+		// itemsRaw = itemsRaw;
 	}
 
 	function handleClipDeleted(payload) {
@@ -52,18 +48,33 @@
 		console.log('clipboard changed');
 		GetLatestClipboardItem().then((data) => {
 			console.log('latest clipboard item: ', data);
-			itemsRaw.unshift(data[0]);
-			itemsRaw = itemsRaw;
+			if (itemsRaw.length === 0) {
+				console.log('update clip DATA ZERO: ', data, 'itemsRaw: ', itemsRaw);
+				itemsRaw = [...data];
+			} else {
+				console.log('update clip  ', data, 'itemsRaw: ', itemsRaw);
+
+				itemsRaw = [data[0], ...itemsRaw];
+			}
+
+			// itemsRaw = itemsRaw;
 		});
 	});
+
+	let showSettingsModal = false;
 </script>
 
-{#if Object.keys(itemsGroupedByDate).length > 0}
-	<div
-		class="flex overflow-auto flex-col w-full min-h-[100vh] h-full px-2 pt-40 pb-20 bg-background rounded-3xl"
-	>
-		<h1 class="mb-10 text-5xl text-dark">clipboard history</h1>
+<div
+	class="flex overflow-auto flex-col w-full min-h-[100vh] h-full px-2 pt-40 pb-20 bg-background rounded-3xl"
+>
+	<div class="flex items-center justify-between w-full mb-20">
+		<h1 class="text-5xl text-dark">clipboard history</h1>
 
+		<button on:click={() => (showSettingsModal = true)}
+			><SettingsIcon classList="text-dark w-8 h-8" /></button
+		>
+	</div>
+	{#if Object.keys(itemsGroupedByDate).length > 0}
 		{#each Object.keys(itemsGroupedByDate) as date (date)}
 			<Cliplist
 				on:clipDeleted={handleClipDeleted}
@@ -71,14 +82,13 @@
 				{date}
 			/>
 		{/each}
-		<!-- <Cliplist {clipboardHistory} /> -->
-	</div>
-{:else}
-	<div class="flex flex-col w-full min-h-[100vh] h-full px-2 pt-20 pb-20 bg-background rounded-3xl">
-		<h1 class="mb-10 text-4xl text-dark">clips</h1>
+	{:else}
+		<div
+			class="flex flex-col w-full min-h-[100vh] h-full px-2 pt-20 pb-20 bg-background rounded-3xl"
+		>
+			You have no clips yet. Copy something to get started. <br />
+		</div>
+	{/if}
+</div>
 
-		No clips
-	</div>
-{/if}
-
-<SettingsBlock on:clipsDeleted={clearClips} />
+<SettingsModal on:clipboardHistoryNuke={handleClipboardNuke} bind:showSettingsModal />
