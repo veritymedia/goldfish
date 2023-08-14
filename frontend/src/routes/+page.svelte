@@ -38,7 +38,7 @@
 		// itemsRaw = itemsRaw;
 	}
 
-	function handleClipDeleted(payload) {
+	function deleteLocalClipByDate(payload) {
 		const index = itemsRaw.findIndex((item) => item.createdAt === payload.detail.createdAt);
 		console.log('clip deleted: ', index, payload.detail.createdAt);
 		itemsRaw.splice(index, 1);
@@ -46,16 +46,15 @@
 	}
 
 	function handleRecopyFromHistory(payload) {
-		console.log('recopying from history: ', payload.detail);
-		console.log('itemsRaw: FIRST ', itemsRaw[0]);
 		const { content, createdAt } = payload.detail;
 		if (createdAt === itemsRaw[0].createdAt) {
+			console.log('tried to recopy. But it was the most recent');
 			// ClipboardSetText(content);
 			return;
 		} else {
 			DeleteOneByDateCreated(createdAt).then((data) => {
 				if (data === true) {
-					handleClipDeleted({ detail: { createdAt: createdAt } });
+					deleteLocalClipByDate({ detail: { createdAt: createdAt } });
 					// dispatch('clipDeleted', { createdAt: createdAt });
 					ClipboardSetText(content);
 				}
@@ -71,7 +70,7 @@
 			console.log('latest clipboard item: ', data);
 			if (itemsRaw.length === 0) {
 				console.log('update clip DATA ZERO: ', data, 'itemsRaw: ', itemsRaw);
-				itemsRaw = [...data];
+				itemsRaw = [data[0]];
 			} else {
 				console.log('update clip  ', data, 'itemsRaw: ', itemsRaw);
 				itemsRaw = [data[0], ...itemsRaw];
@@ -80,22 +79,24 @@
 	});
 
 	let showSettingsModal = false;
+	function openSettingsModal() {
+		console.log('opening settings modal');
+		showSettingsModal = true;
+	}
 </script>
 
 <div
-	class="flex overflow-auto flex-col w-full min-h-[100vh] h-full px-2 pt-40 pb-20 bg-background rounded-3xl"
+	class="flex overflow-scroll hide-scrollbars flex-col w-full h-screen xmin-h-[100vh] px-2 pt-40 xpb-20 bg-background rounded-3xl"
 >
-	<div class="flex items-center justify-between w-full mb-20">
+	<div class="sticky flex items-center justify-between w-full pb-4 mb-20 -top-28 bg-background">
 		<h1 class="text-5xl text-dark">clipboard history</h1>
 
-		<button on:click={() => (showSettingsModal = true)}
-			><SettingsIcon classList="text-dark w-8 h-8" /></button
-		>
+		<button on:click={openSettingsModal}><SettingsIcon classList="text-dark w-7 h-7" /></button>
 	</div>
 	{#if Object.keys(itemsGroupedByDate).length > 0}
 		{#each Object.keys(itemsGroupedByDate) as date (date)}
 			<Cliplist
-				on:clipDeleted={handleClipDeleted}
+				on:clipDeleted={deleteLocalClipByDate}
 				on:recopyFromHistory={handleRecopyFromHistory}
 				clipListByDay={itemsGroupedByDate[date]}
 				{date}
@@ -103,11 +104,23 @@
 		{/each}
 	{:else}
 		<div
-			class="flex flex-col w-full min-h-[100vh] h-full px-2 pt-20 pb-20 bg-background rounded-3xl"
+			class="flex flex-col text-dark w-full min-h-[100vh] h-full px-2 pt-20 pb-20 bg-background rounded-3xl"
 		>
-			You have no clips yet. Copy something to get started. <br />
+			You have no clips yet. <br />
+			Copy something to get started. <br />
 		</div>
 	{/if}
 </div>
 
 <SettingsModal on:clipboardHistoryNuke={handleClipboardNuke} bind:showSettingsModal />
+
+<style>
+	.hide-scrollbars {
+		-ms-overflow-style: none; /* IE and Edge */
+		scrollbar-width: none; /* Firefox */
+	}
+
+	.hide-scrollbars::-webkit-scrollbar {
+		display: none;
+	}
+</style>

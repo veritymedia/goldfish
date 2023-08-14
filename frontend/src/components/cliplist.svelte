@@ -19,6 +19,7 @@
 	console.log('clipListByDay: ', clipListByDay);
 
 	const dispatch = createEventDispatcher();
+
 	function propagateClipDeleted(payload) {
 		dispatch('clipDeleted', { createdAt: payload.detail.createdAt });
 	}

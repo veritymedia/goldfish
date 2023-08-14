@@ -1,10 +1,12 @@
 <script>
 	export let clip;
 	import { createEventDispatcher } from 'svelte';
+	import { DeleteOneByDateCreated } from '../lib/wailsjs/go/main/App.js';
 
 	const dispatch = createEventDispatcher();
 
 	function recopyFromHistory() {
+		console.log('INITIATE RECOPY FROM HISTORY: ');
 		dispatch('recopyFromHistory', { createdAt: clip.createdAt, content: clip.content });
 	}
 
@@ -32,7 +34,10 @@
 			})}</span
 		>
 		<button
-			on:click={deleteClipByDate}
+			on:click={(event) => {
+				event.stopPropagation();
+				deleteClipByDate();
+			}}
 			class="hidden h-full px-2 font-medium rounded-md hover:bg-highlight group-hover:inline"
 			>delete clip</button
 		>
