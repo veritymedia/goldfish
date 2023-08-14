@@ -12,16 +12,12 @@
 
 	function deleteClipByDate() {
 		console.log('deleting clip by date: ', clip.createdAt);
-		let result;
+
 		DeleteOneByDateCreated(clip.createdAt).then((data) => {
-			result = data;
+			if (data === true) {
+				dispatch('clipDeleted', { createdAt: clip.createdAt });
+			}
 		});
-
-		if (result === true) {
-			dispatch('clipDeleted', { createdAt: clip.createdAt });
-		}
-
-		console.log('deleting clip by date result: ', result);
 	}
 </script>
 

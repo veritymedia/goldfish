@@ -1,4 +1,6 @@
 <script>
+	import { createEventDispatcher } from 'svelte';
+
 	// import { EventsOn } from '../lib/wailsjs/runtime/runtime.js';
 	import CliplistItem from './cliplist-item.svelte';
 	export let clipListByDay;
@@ -15,6 +17,11 @@
 	}
 	let formattedDate = formatDate(date);
 	console.log('clipListByDay: ', clipListByDay);
+
+	const dispatch = createEventDispatcher();
+	function propagateClipDeleted(payload) {
+		dispatch('clipDeleted', { createdAt: payload.detail.createdAt });
+	}
 </script>
 
 <div>
@@ -25,7 +32,7 @@
 			<!-- {clipListByDay} -->
 			{#each clipListByDay as clip}
 				<!-- {clip.createdAt} -->
-				<CliplistItem {clip} />
+				<CliplistItem {clip} on:clipDeleted={propagateClipDeleted} />
 			{/each}
 		</ul>
 	</div>
