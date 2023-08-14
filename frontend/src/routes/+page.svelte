@@ -46,6 +46,7 @@
 	// Listen for events from the backend
 	EventsOn('clipboard-update', () => {
 		console.log('clipboard changed');
+
 		GetLatestClipboardItem().then((data) => {
 			console.log('latest clipboard item: ', data);
 			if (itemsRaw.length === 0) {
@@ -53,11 +54,8 @@
 				itemsRaw = [...data];
 			} else {
 				console.log('update clip  ', data, 'itemsRaw: ', itemsRaw);
-
 				itemsRaw = [data[0], ...itemsRaw];
 			}
-
-			// itemsRaw = itemsRaw;
 		});
 	});
 

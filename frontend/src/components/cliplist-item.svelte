@@ -3,17 +3,17 @@
 	import { createEventDispatcher } from 'svelte';
 
 	const dispatch = createEventDispatcher();
-	import { ClipboardSetText } from '../lib/wailsjs/runtime/runtime.js';
+	import { ClipboardSetText, EventsOn } from '../lib/wailsjs/runtime/runtime.js';
 	import { DeleteOneByDateCreated } from '../lib/wailsjs/go/main/App.js';
 
-	function setClipboardText() {
+	function recopyFromHistory() {
 		DeleteOneByDateCreated(clip.createdAt).then((data) => {
 			if (data === true) {
-				dispatch('clipDeleted', { createdAt: clip.createdAt });
+				ClipboardSetText(clip.content).finally(() => {
+					dispatch('clipDeleted', { createdAt: clip.createdAt });
+				});
 			}
-			ClipboardSetText(clip.content);
 		});
-		// ClipboardSetText(text);
 	}
 
 	function deleteClipByDate() {
@@ -29,7 +29,7 @@
 
 <!-- <button > -->
 <button
-	on:click={setClipboardText(clip.content)}
+	on:click={recopyFromHistory(clip.content)}
 	class="flex flex-col items-start justify-between gap-2 p-4 group text-dark rounded-xl hover:bg-light"
 >
 	<div class="flex items-center h-6 text-xs">
