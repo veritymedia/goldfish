@@ -33,7 +33,7 @@
 </script>
 
 <div>
-	<h2 class="text-sm font-light text-dark">{formattedDate}</h2>
+	<h2 class="font-medium text-opacity-75 text text-dark">{formattedDate}</h2>
 
 	<div class="mt-2 mb-5">
 		<ul class="flex flex-col gap-3 p-2 border-2 rounded-2xl border-dark">

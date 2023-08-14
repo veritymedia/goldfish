@@ -1,4 +1,5 @@
 <script>
+	import { onMount } from 'svelte';
 	import Cliplist from '../components/cliplist.svelte';
 	import SettingsIcon from '../components/icons/settings-icon.svelte';
 	import SettingsModal from '../components/settings-modal.svelte';
@@ -9,13 +10,16 @@
 
 	let itemsRaw = [];
 
-	GetAllClipboardItems().then((data) => {
-		if (data && data.length === 0) {
-			return;
-		}
-		itemsRaw = data;
+	onMount(() => {
+		GetAllClipboardItems().then((data) => {
+			console.log('remote list: ', data, 'itemsRaw: ', itemsRaw);
 
-		console.log('clipsGroupedByDate: ', itemsGroupedByDate);
+			if (data && data.length > 0) {
+				itemsRaw = [...data];
+			}
+		});
+
+		// console.log('clipsGroupedByDate: ', itemsGroupedByDate);
 	});
 
 	// this needs to be a computed.
@@ -33,12 +37,17 @@
 	}, {});
 
 	function handleClipboardNuke() {
+		if (itemsRaw.length === 0) {
+			return;
+		}
 		console.log('clearing clips');
 		itemsRaw = [];
-		// itemsRaw = itemsRaw;
 	}
 
 	function deleteLocalClipByDate(payload) {
+		if (itemsRaw.length === 0) {
+			return;
+		}
 		const index = itemsRaw.findIndex((item) => item.createdAt === payload.detail.createdAt);
 		console.log('clip deleted: ', index, payload.detail.createdAt);
 		itemsRaw.splice(index, 1);
@@ -89,7 +98,7 @@
 	class="flex overflow-scroll hide-scrollbars flex-col w-full h-screen xmin-h-[100vh] px-2 pt-40 xpb-20 bg-background rounded-3xl"
 >
 	<div class="sticky flex items-center justify-between w-full pb-4 mb-20 -top-28 bg-background">
-		<h1 class="text-5xl text-dark">clipboard history</h1>
+		<h1 class="text-5xl text-dark">clipboard</h1>
 
 		<button on:click={openSettingsModal}><SettingsIcon classList="text-dark w-7 h-7" /></button>
 	</div>
@@ -103,9 +112,7 @@
 			/>
 		{/each}
 	{:else}
-		<div
-			class="flex flex-col text-dark w-full min-h-[100vh] h-full px-2 pt-20 pb-20 bg-background rounded-3xl"
-		>
+		<div class="flex flex-col text-dark w-full min-h-[100vh] h-full px-2 bg-background rounded-3xl">
 			You have no clips yet. <br />
 			Copy something to get started. <br />
 		</div>
