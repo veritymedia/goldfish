@@ -20,5 +20,6 @@
 </script>
 
 <div style="--wails-draggable:drag" class="fixed top-0 w-full p-2 bg-background text-dark">
-	<svelte:component this={headerMap[platform]} />
+	<!-- <svelte:component this={headerMap[platform]} /> -->
+	<svelte:component this={HeaderLinux} />
 </div>

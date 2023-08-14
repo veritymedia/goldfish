@@ -2,9 +2,13 @@
 	import XIcon from '../icons/x-icon.svelte';
 	import CloseIcon from '../icons/close-icon.svelte';
 
-	import { WindowMinimise } from '../../lib/wailsjs/runtime/runtime.js';
+	import { WindowHide, WindowMinimise } from '../../lib/wailsjs/runtime/runtime.js';
 	function useWindowMinimize() {
 		WindowMinimise();
+	}
+
+	function useWindowClose() {
+		WindowHide();
 	}
 </script>
 
@@ -18,7 +22,9 @@
 			on:click={useWindowMinimize}
 			class="flex items-center justify-center w-8 h-8 hover:bg-light"><CloseIcon /></button
 		>
-		<button class="flex items-center justify-center w-8 h-8 hover:bg-light"
+		<button
+			on:click={useWindowClose}
+			class="flex items-center justify-center w-8 h-8 hover:bg-light"
 			><XIcon classList="text-dark" /></button
 		>
 	</div>
