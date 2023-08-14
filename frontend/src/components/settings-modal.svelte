@@ -61,12 +61,13 @@
 	dialog::backdrop {
 		background: rgba(0, 0, 0, 0.1);
 		backdrop-filter: blur(4px);
+		animation: fade 0.5s ease;
 	}
 	dialog > div {
 		padding: 1em;
 	}
 	dialog[open] {
-		animation: zoom 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+		animation: zoom 0.5s ease;
 	}
 	@keyframes zoom {
 		from {
@@ -77,8 +78,9 @@
 		}
 	}
 	dialog[open]::backdrop {
-		animation: fade 0.5s ease-out;
+		animation: fade 0.5s ease;
 	}
+
 	@keyframes fade {
 		from {
 			opacity: 0;

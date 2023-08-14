@@ -22,6 +22,13 @@
 	function propagateClipDeleted(payload) {
 		dispatch('clipDeleted', { createdAt: payload.detail.createdAt });
 	}
+
+	function propagateRecopyFromHistory(payload) {
+		dispatch('recopyFromHistory', {
+			createdAt: payload.detail.createdAt,
+			content: payload.detail.content
+		});
+	}
 </script>
 
 <div>
@@ -32,7 +39,11 @@
 			<!-- {clipListByDay} -->
 			{#each clipListByDay as clip}
 				<!-- {clip.createdAt} -->
-				<CliplistItem {clip} on:clipDeleted={propagateClipDeleted} />
+				<CliplistItem
+					{clip}
+					on:clipDeleted={propagateClipDeleted}
+					on:recopyFromHistory={propagateRecopyFromHistory}
+				/>
 			{/each}
 		</ul>
 	</div>

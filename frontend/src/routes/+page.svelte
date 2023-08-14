@@ -3,7 +3,9 @@
 	import SettingsIcon from '../components/icons/settings-icon.svelte';
 	import SettingsModal from '../components/settings-modal.svelte';
 	import { GetAllClipboardItems, GetLatestClipboardItem } from '../lib/wailsjs/go/main/App.js';
-	import { EventsOn } from '../lib/wailsjs/runtime/runtime.js';
+	import { DeleteOneByDateCreated } from '../lib/wailsjs/go/main/App.js';
+
+	import { ClipboardSetText, EventsOn } from '../lib/wailsjs/runtime/runtime.js';
 
 	let itemsRaw = [];
 
@@ -43,6 +45,24 @@
 		itemsRaw = itemsRaw;
 	}
 
+	function handleRecopyFromHistory(payload) {
+		console.log('recopying from history: ', payload.detail);
+		console.log('itemsRaw: FIRST ', itemsRaw[0]);
+		const { content, createdAt } = payload.detail;
+		if (createdAt === itemsRaw[0].createdAt) {
+			// ClipboardSetText(content);
+			return;
+		} else {
+			DeleteOneByDateCreated(createdAt).then((data) => {
+				if (data === true) {
+					handleClipDeleted({ detail: { createdAt: createdAt } });
+					// dispatch('clipDeleted', { createdAt: createdAt });
+					ClipboardSetText(content);
+				}
+			});
+		}
+	}
+
 	// Listen for events from the backend
 	EventsOn('clipboard-update', () => {
 		console.log('clipboard changed');
@@ -76,6 +96,7 @@
 		{#each Object.keys(itemsGroupedByDate) as date (date)}
 			<Cliplist
 				on:clipDeleted={handleClipDeleted}
+				on:recopyFromHistory={handleRecopyFromHistory}
 				clipListByDay={itemsGroupedByDate[date]}
 				{date}
 			/>

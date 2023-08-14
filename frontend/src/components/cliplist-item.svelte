@@ -3,17 +3,9 @@
 	import { createEventDispatcher } from 'svelte';
 
 	const dispatch = createEventDispatcher();
-	import { ClipboardSetText, EventsOn } from '../lib/wailsjs/runtime/runtime.js';
-	import { DeleteOneByDateCreated } from '../lib/wailsjs/go/main/App.js';
 
 	function recopyFromHistory() {
-		DeleteOneByDateCreated(clip.createdAt).then((data) => {
-			if (data === true) {
-				ClipboardSetText(clip.content).finally(() => {
-					dispatch('clipDeleted', { createdAt: clip.createdAt });
-				});
-			}
-		});
+		dispatch('recopyFromHistory', { createdAt: clip.createdAt, content: clip.content });
 	}
 
 	function deleteClipByDate() {
