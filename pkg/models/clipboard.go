@@ -16,6 +16,16 @@ type ClipboardItemModel struct {
 	DB *sql.DB
 }
 
+func (m *ClipboardItemModel) DeleteAll() error {
+	q := "DELETE FROM clipboard_items"
+
+	_, err := m.DB.Exec(q)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (m *ClipboardItemModel) Set(content string) error {
 
 	timeNow := time.Now().Format(time.RFC3339)
@@ -54,8 +64,8 @@ func (m *ClipboardItemModel) GetLatest() ([]ClipboardItem, error) {
 }
 
 // Use a method on the custom ClipboardModel type to run the SQL query.
-func (m *ClipboardItemModel) All() ([]ClipboardItem, error) {
-	rows, err := m.DB.Query("SELECT * FROM clipboard_items")
+func (m *ClipboardItemModel) GetAll() ([]ClipboardItem, error) {
+	rows, err := m.DB.Query("SELECT * FROM clipboard_items ORDER BY created_at DESC")
 	if err != nil {
 		return nil, err
 	}

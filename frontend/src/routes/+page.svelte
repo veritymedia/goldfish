@@ -1,31 +1,49 @@
 <script>
-	// import { EventsOn } from '../lib/wailsjs/runtime/runtime.js';
+	import Cliplist from '../components/cliplist.svelte';
+	import SettingsBlock from '../components/settings-block.svelte';
 
 	import { GetAllClipboardItems } from '../lib/wailsjs/go/main/App.js';
 
-	let clipboardHistory = [];
+	// let allClips = [];
+
+	let itemsGroupedByDate = {};
 
 	GetAllClipboardItems().then((data) => {
-		clipboardHistory = data;
-		console.log(data);
+		// clipboardHistory = data;
+		console.log('data: ', data);
+
+		itemsGroupedByDate = data.reduce((groups, item) => {
+			let date = new Date(item.createdAt);
+
+			// Build a date string in the format yyyy-mm-dd
+			let dateString = date.toISOString().split('T')[0];
+
+			if (!groups[dateString]) {
+				groups[dateString] = [];
+			}
+			groups[dateString].push(item);
+			return groups;
+		}, {});
+
+		console.log('clipsGroupedByDate: ', itemsGroupedByDate);
 	});
 
-	// EventsOn('newTextData', (data) => {
-	// 	clipboardHistory.push(data);
-
-	// 	clipboardHistory = clipboardHistory;
-	// });
+	function clearClips() {
+		console.log('clearing clips');
+		clipboardHistory = [];
+		clipboardHistory = clipboardHistory;
+	}
 </script>
 
-<ul class="fixed flex flex-col gap-3 -translate-x-1/2 w-min-max left-1/2 top-1/2">
-	{#each clipboardHistory as entry}
-		<li class="flex gap-5 p-2 text-gray-100 bg-gray-800">
-			<span class="font-bold text-green-500 uppercase">Copied text: </span>{entry.content}
-			<div class={entry.status === 'ok' ? 'bg-lime-500' : 'bg-amber-500'}>
-				{entry.createdAt}
-			</div>
-		</li>
-	{:else}
-		<li>No clipboard history yet</li>
-	{/each}
-</ul>
+{#if itemsGroupedByDate !== {}}
+	<div class="flex flex-col w-full h-full px-2 pt-20 pb-20 bg-background rounded-3xl">
+		<h1 class="mb-10 text-4xl text-dark">clips</h1>
+
+		{#each Object.keys(itemsGroupedByDate) as date (date)}
+			<Cliplist clipListByDay={itemsGroupedByDate[date]} {date} />
+		{/each}
+		<!-- <Cliplist {clipboardHistory} /> -->
+	</div>
+{/if}
+
+<SettingsBlock on:clipsDeleted={clearClips} />

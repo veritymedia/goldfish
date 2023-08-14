@@ -5,12 +5,14 @@ import (
 	"embed"
 	"fmt"
 
+	appicon "github.com/veritymedia/goldfish/build"
 	"github.com/veritymedia/goldfish/pkg/data"
 	"github.com/veritymedia/goldfish/pkg/models"
 	"github.com/wailsapp/wails/v2"
 
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
+	"github.com/wailsapp/wails/v2/pkg/options/linux"
 )
 
 //go:embed all:frontend/build
@@ -38,11 +40,13 @@ func main() {
 	app := NewApp(dbModels)
 	// env := NewEnv(dbModels)
 
+	fmt.Println("Icon bytes: ", appicon.AppIconBytes)
+
 	// Create application with options
 	err = wails.Run(&options.App{
 		Title:     "Goldfish",
-		Width:     800,
-		Height:    600,
+		Width:     616,
+		Height:    744,
 		Frameless: true,
 
 		// StartHidden: true,
@@ -55,6 +59,9 @@ func main() {
 			// env.ctx = ctx
 			app.ctx = ctx
 			app.startClipboardWatcher()
+		},
+		Linux: &linux.Options{
+			Icon: appicon.AppIconBytes,
 		},
 		OnDomReady: app.domready,
 		Bind: []interface{}{

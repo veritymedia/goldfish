@@ -1,10 +1,9 @@
 <script>
 	import '../app.css';
+	import Header from '../components/header.svelte';
 </script>
 
-<!-- <div class="text-black bg-white dark:text-white dark:bg-black"> -->
-<div class="fixed top-0 w-screen bg-slate-300">
-	<a href="/test">Test</a>
+<div class=" bg-background">
+	<Header />
+	<slot />
 </div>
-<slot />
-<!-- </div> -->

@@ -14,8 +14,16 @@ import (
 // 	Models Models
 // }
 
+func (a *App) DeleteAllClipboardItems() bool {
+	err := a.Models.ClipboardItem.DeleteAll()
+	if err != nil {
+		return false
+	}
+	return true
+}
+
 func (a *App) GetAllClipboardItems() ([]models.ClipboardItem, error) {
-	models, err := a.Models.ClipboardItem.All()
+	models, err := a.Models.ClipboardItem.GetAll()
 	if err != nil {
 		fmt.Println("ERROR: (*Env)GetClipboardItems: could not fetch from DB. ")
 		return nil, err
