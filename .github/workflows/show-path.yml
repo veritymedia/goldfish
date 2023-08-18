@@ -15,3 +15,11 @@ jobs:
       - name: Show . path
         run: |
           realpath .
+
+      - name: Show working dir
+        run: |
+          pwd
+
+      - name: Show ls
+        run: |
+          ls -la
