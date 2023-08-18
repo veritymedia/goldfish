@@ -5,12 +5,15 @@ import (
 	"embed"
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/sqlite"
 
 	"github.com/golang-migrate/migrate/v4/source/iofs"
-	_ "github.com/mattn/go-sqlite3"
+	// _ "github.com/mattn/go-sqlite3"
+	_ "modernc.org/sqlite"
+
 	"github.com/veritymedia/goldfish/pkg/config"
 	"github.com/veritymedia/goldfish/pkg/utils"
 )
@@ -19,8 +22,9 @@ import (
 var schemaFs embed.FS
 
 var (
-	dataDir = utils.DataDir()
-	dbPath  = dataDir + config.AppName + ".db"
+	dataDir, err = utils.DataDir()
+	// dbPath  = dataDir + config.AppName + ".db"
+	dbPath  = filepath.Join(dataDir, config.AppName +".db")
 	// Pool    *sql.DB
 )
 
@@ -41,11 +45,11 @@ func InitialiseDb() (*sql.DB, error) {
 }
 
 func connectDbPool() (*sql.DB, error) {
-	db, err := sql.Open("sqlite3", dbPath)
+	db, err := sql.Open("sqlite", dbPath)
 
 	if err != nil {
 		fmt.Println("Fatal in sql.Open(path): ", err)
-		createDbFile()
+		createDbPath()
 		db, err = sql.Open("sqlite3", dbPath)
 	}
 
@@ -60,20 +64,20 @@ func connectDbPool() (*sql.DB, error) {
 
 	err = db.Ping()
 	if err != nil {
-		fmt.Println("ERROR: could not ping DB")
-		createDbFile()
+		fmt.Println("ERROR: could not ping DB: ", err)
+		createDbPath()
 	}
 
 	err = db.Ping()
 	if err != nil {
-		fmt.Println("ERROR: could not ping DB second time")
+		fmt.Println("ERROR: could not ping DB second time: ", err)
 		return nil, err
 
 	}
 	return db, nil
 }
 
-func createDbFile() {
+func createDbPath() {
 	os.MkdirAll(dataDir, 0755)
 	os.Create(dbPath)
 }
