@@ -22,4 +22,5 @@ jobs:
 
       - name: Show ls
         run: |
-          ls -la
+          ls -a
+          ls
