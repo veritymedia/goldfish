@@ -65,41 +65,41 @@ jobs:
       # RELEASE and UPLOAD
 
       # With GH cli
-      - name: Create Release
-        run: |
-          gh release create "${{ github.ref }}" \
-            --repo="${{ github.repository }}" \
-            --title="Release ${{ github.ref }}" \
-            --notes="Release notes"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Create Release
+      #   run: |
+      #     gh release create "${{ github.ref }}" \
+      #       --repo="${{ github.repository }}" \
+      #       --title="Release ${{ github.ref }}" \
+      #       --notes="Release notes"
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload Release Asset
-        run: |
-          gh release upload "${{ github.ref }}" /home/runner/work/goldfish/goldfish/build/bin/linux/goldfish-linux \
-            --repo="${{ github.repository }}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Upload Release Asset
+      #   run: |
+      #     gh release upload "${{ github.ref }}" /home/runner/work/goldfish/goldfish/build/bin/linux/goldfish-linux \
+      #       --repo="${{ github.repository }}"
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # WITH ACTIONS
 
-      # - name: Create Release
-      #   id: create_release
-      #   uses: actions/create-release@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     tag_name: ${{ github.ref }}
-      #     release_name: Release ${{ github.ref }}
-      #     draft: false
-      #     prerelease: false
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
 
-      # - name: Upload Release Asset
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     asset_path: ./mybinary
-      #     asset_name: mybinary
-      #     asset_content_type: application/octet-stream
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/bin/linux/
+          asset_name: goldfish-linux
+          asset_content_type: application/octet-stream
