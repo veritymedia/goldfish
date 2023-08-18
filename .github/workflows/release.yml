@@ -20,7 +20,7 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 20.5.1
-     
+
       # You may need to manually build you frontend manually here, unless you have configured frontend build and install commands in wails.json.
       - name: Check NPM version
         run: npm --version
@@ -32,32 +32,74 @@ jobs:
 
       - name: Get Wails
         run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
-  
+
       - name: Run Wails Doctor
         run: wails doctor
-      
+
       - name: Build Wails app linux
         if: matrix.platform == 'ubuntu-latest'
         run: |
           wails build -o goldfish-linux
-      
+
       # - name: upload artifacts macOS
       #   if: matrix.platform == 'macos-latest'
       #   uses: actions/upload-artifact@v2
       #   with:
       #     name: wails-binaries-macos
       #     path: build/bin/darwin/*
-      
+
       # - name: upload artifacts windows
       #   if: matrix.platform == 'windows-latest'
       #   uses: actions/upload-artifact@v2
       #   with:
       #     name: wails-binaries-windows
       #     path: build/bin/win/*
-      
-      - name: upload artifacts linux
-        if: matrix.platform == 'ubuntu-latest'
-        uses: actions/upload-artifact@v3
-        with:
-          name: goldfish-linux
-          path: build/bin/linux/*
+
+      # - name: upload artifacts linux
+      #   if: matrix.platform == 'ubuntu-latest'
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: goldfish-linux
+      #     path: build/bin/linux/*
+
+      # RELEASE and UPLOAD
+
+      # With GH cli
+      - name: Create Release
+        run: |
+          gh release create "${{ github.ref }}" \
+            --repo="${{ github.repository }}" \
+            --title="Release ${{ github.ref }}" \
+            --notes="Release notes"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Release Asset
+        run: |
+          gh release upload "${{ github.ref }}" ./mybinary \
+            --repo="${{ github.repository }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # WITH ACTIONS
+
+      # - name: Create Release
+      #   id: create_release
+      #   uses: actions/create-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     tag_name: ${{ github.ref }}
+      #     release_name: Release ${{ github.ref }}
+      #     draft: false
+      #     prerelease: false
+
+      # - name: Upload Release Asset
+      #   uses: actions/upload-release-asset@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
+      #     asset_path: ./mybinary
+      #     asset_name: mybinary
+      #     asset_content_type: application/octet-stream
