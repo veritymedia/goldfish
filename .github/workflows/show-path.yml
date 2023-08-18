@@ -1,0 +1,17 @@
+name: "Test path"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Show $PATH
+        run: |
+          echo $PATH
+
+      - name: Show . path
+        run: |
+          realpath .
