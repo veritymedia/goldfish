@@ -1,7 +1,9 @@
 name: "Release"
 on:
-  workflow_dispatch:
-    # This Action only starts when you go to Actions and manually run the workflow.
+  release:
+    types: [created]
+  # workflow_dispatch:
+  # This Action only starts when you go to Actions and manually run the workflow.
 
 jobs:
   package:
