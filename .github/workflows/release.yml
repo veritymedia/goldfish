@@ -16,17 +16,30 @@ jobs:
         uses: actions/setup-go@v2
         with:
           go-version: ${{ matrix.go-version }}
-      - name: setup node
+      - name: Setup NODE
         uses: actions/setup-node@v2
         with:
-          node-version: 18
+          node-version: 20.5.1
       # - name: Install pnpm
       #   uses: pnpm/action-setup@v2
       #   with:
       #     version: 7
       # You may need to manually build you frontend manually here, unless you have configured frontend build and install commands in wails.json.
+      - name: Check NPM version
+        run: npm --version
+      - name: Install wails build dependencies
+        run: |
+
+          # sudo apt-get install -y tzdata
+          # sudo dpkg-reconfigure -f noninteractive tzdata
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev pkg-config gcc npm
+
+      # need gcc, libgtk-3, libwebkit, npm,
       - name: Get Wails
         run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
+      - name: Run Wails Doctor
+        run: wails doctor
       - name: Build Wails app linux
         if: matrix.platform == 'ubuntu-latest'
         run: |
