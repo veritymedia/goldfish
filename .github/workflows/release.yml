@@ -73,7 +73,6 @@ jobs:
         run: |
           gh release upload "${{ github.ref_name }}" /home/runner/work/goldfish/goldfish/build/bin/goldfish-linux \
           /home/runner/work/goldfish/goldfish/build/bin/goldfish-windows.exe \
-          /home/runner/work/goldfish/goldfish/build/bin/goldfish-macos \
           /home/runner/work/goldfish/goldfish/build/bin/goldfish-macos.app \
             --repo="${{ github.repository }}"
         env:
