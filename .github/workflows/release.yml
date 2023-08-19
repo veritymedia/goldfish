@@ -6,6 +6,8 @@ on:
 
 jobs:
   package:
+    permissions:
+      contents: write 
     strategy:
       matrix:
         platform: [ubuntu-latest]
