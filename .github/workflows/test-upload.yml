@@ -22,6 +22,29 @@ jobs:
           name: app-v${{ env.version }}
           path: ./build/appicon.png
 
+
+       # With GH cli
+      - name: Create Release
+        run: |
+          gh release create "${{ github.ref_name }}" \
+            --repo="${{ github.repository }}" \
+            --title="Release ${{ github.ref_name }}" \
+            --notes="Release notes"
+        env:
+          GITHUB_TOKEN: ${{ secrets.CUSTOM_PAT }}
+
+      - name: Delay for API synchronization
+        run: |
+          echo "Waiting for API synchronization"
+          sleep 3
+
+      - name: Upload Release Asset
+        run: |
+          gh release upload "${{ github.ref_name }}" /home/runner/work/goldfish/goldfish/build/appicon.png \
+            --repo="${{ github.repository }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.CUSTOM_PAT }}
+
       # - name: Release
       #   uses: softprops/action-gh-release@v1
       #   if: startsWith(github.ref, 'refs/tags/')
