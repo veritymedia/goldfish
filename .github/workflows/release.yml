@@ -82,8 +82,7 @@ jobs:
       - name: Upload - Windows
         if: matrix.platform == 'windows-latest'
         run: |
-          gh release upload "${{ github.ref_name }}" D:\a\goldfish\goldfish\build\bin\goldfish-windows.exe \
-            --repo="${{ github.repository }}"
+          gh release upload "${{ github.ref_name }}" D:\a\goldfish\goldfish\build\bin\goldfish-windows.exe --repo="${{ github.repository }}"
         env:
           GITHUB_TOKEN: ${{ secrets.CUSTOM_PAT }}
 
