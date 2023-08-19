@@ -1,7 +1,7 @@
 name: "Release"
 on:
   release:
-    types: [created]
+    types: [published]
   # workflow_dispatch:
   # This Action only starts when you go to Actions and manually run the workflow.
 
