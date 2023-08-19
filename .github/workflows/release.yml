@@ -79,14 +79,19 @@ jobs:
             --title="Release ${{ github.ref }}" \
             --notes="Release notes"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CUSTOM_PAT }}
+
+      - name: Delay for API synchronization
+        run: |
+          echo "Waiting for API synchronization"
+          sleep 3
 
       - name: Upload Release Asset
         run: |
           gh release upload "${{ github.ref }}" /home/runner/work/goldfish/goldfish/build/bin/goldfish-linux \
             --repo="${{ github.repository }}"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CUSTOM_PAT }}
 
       #  BASIC ONE WHICH (KIND OF) WORKS
       # - uses: actions/upload-artifact@v3
