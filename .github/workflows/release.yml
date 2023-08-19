@@ -63,7 +63,7 @@ jobs:
       #   uses: actions/upload-artifact@v3
       #   with:
       #     name: goldfish-linux
-      #     path: build/bin/linux/*
+      #     path: ./build/bin/linux/*
 
       # RELEASE and UPLOAD
 
@@ -87,8 +87,8 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: app-v${{ env.version }}
-          path: build/bin/*`
+          name: app-v${{ env.version }}${{env.ref}}
+          path: ./build/bin/*`
 
       # - name: Release
       #   uses: softprops/action-gh-release@v1
