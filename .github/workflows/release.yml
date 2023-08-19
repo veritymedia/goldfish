@@ -1,7 +1,8 @@
 name: "Build and Release"
 
 on:
-  workflow_dispatch:
+  release:
+    types: [published]
 
 jobs:
   build-release:
@@ -9,7 +10,7 @@ jobs:
       contents: write
     strategy:
       matrix:
-        platform: [ubuntu-latest]
+        platform: [ubuntu-latest, windows-latest]
         go-version: [1.20.7]
     runs-on: ${{ matrix.platform }}
     steps:
@@ -27,6 +28,7 @@ jobs:
 
       - name: Check NPM version
         run: npm --version
+
       - name: Install wails build dependencies (Linux only)
         if: matrix.platform == 'ubuntu-latest'
         run: |
@@ -39,41 +41,56 @@ jobs:
       - name: Run Wails Doctor
         run: wails doctor
 
-      - name: Build Wails app linux
+      - name: Build - linux
         if: matrix.platform == 'ubuntu-latest'
         run: |
           wails build -o goldfish-linux
 
-      - name: Build Wails app windows
-        # if: matrix.platform == 'ubuntu-latest'
+      - name: Build - windows
+        if: matrix.platform == 'windows-latest'
         run: |
-          wails build -o goldfish-windows.exe -platform windows/amd64
+          wails build -o goldfish-windows.exe
 
-      - name: Build Wails app MacOS
-        # if: matrix.platform == 'ubuntu-latest'
+      - name: Build - macOS
+        if: matrix.platform == 'macos-latest'
         run: |
-          wails build -o goldfish-macos -platform darwin/universal
+          wails build -o goldfish-macos.app
 
       # RELEASE and UPLOAD
-      - name: Create Release
+      # - name: Create Release
+      #   run: |
+      #     gh release create "${{ github.ref_name }}" \
+      #       --repo="${{ github.repository }}" \
+      #       --title="${{ github.ref_name }}" \
+      #       --notes="Release notes"
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.CUSTOM_PAT }}
+
+      # - name: Delay for API synchronization
+      #   run: |
+      #     echo "Waiting for API synchronization"
+      #     sleep 3
+
+      - name: Upload - Linux
+        if: matrix.platform == 'ubuntu-latest'
         run: |
-          gh release create "${{ github.ref_name }}" \
-            --repo="${{ github.repository }}" \
-            --title="${{ github.ref_name }}" \
-            --notes="Release notes"
+          gh release upload "${{ github.ref_name }}" /home/runner/work/goldfish/goldfish/build/bin/goldfish-linux \
+            --repo="${{ github.repository }}"
         env:
           GITHUB_TOKEN: ${{ secrets.CUSTOM_PAT }}
 
-      - name: Delay for API synchronization
+      - name: Upload - Windows
+        if: matrix.platform == 'windows-latest'
         run: |
-          echo "Waiting for API synchronization"
-          sleep 3
+          gh release upload "${{ github.ref_name }}" /home/runner/work/goldfish/goldfish/build/bin/goldfish-windows.exe \
+            --repo="${{ github.repository }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.CUSTOM_PAT }}
 
-      - name: Upload Release Asset
+      - name: Upload - macOS
+        if: matrix.platform == 'macos-latest'
         run: |
-          gh release upload "${{ github.ref_name }}" /home/runner/work/goldfish/goldfish/build/bin/goldfish-linux \
-          /home/runner/work/goldfish/goldfish/build/bin/goldfish-windows.exe \
-          /home/runner/work/goldfish/goldfish/build/bin/goldfish-macos.app \
+          gh release upload "${{ github.ref_name }}"  /home/runner/work/goldfish/goldfish/build/bin/goldfish-macos.app \
             --repo="${{ github.repository }}"
         env:
           GITHUB_TOKEN: ${{ secrets.CUSTOM_PAT }}
