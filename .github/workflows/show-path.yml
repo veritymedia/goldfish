@@ -12,6 +12,9 @@ jobs:
         run: |
           echo $PATH
 
+      - name: Show $HOME
+        run: |
+          echo $HOME
       - name: Show . path
         run: |
           realpath .
