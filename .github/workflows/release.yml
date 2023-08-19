@@ -1,4 +1,4 @@
-name: "Release on tag push"
+name: "Build and Release"
 
 on:
   workflow_dispatch:
@@ -44,16 +44,17 @@ jobs:
         run: |
           wails build -o goldfish-linux
 
-      - name: upload artifacts linux
-        if: matrix.platform == 'ubuntu-latest'
-        uses: actions/upload-artifact@v3
-        with:
-          name: goldfish-linux
-          path: ./build/bin/linux/*
+      - name: Build Wails app windows
+        # if: matrix.platform == 'ubuntu-latest'
+        run: |
+          wails build -o goldfish-windows.exe -platform windows/amd64
+
+      - name: Build Wails app MacOS
+        # if: matrix.platform == 'ubuntu-latest'
+        run: |
+          wails build -o goldfish-macos -platform darwin/universal
 
       # RELEASE and UPLOAD
-
-      # With GH cli
       - name: Create Release
         run: |
           gh release create "${{ github.ref_name }}" \
@@ -74,32 +75,3 @@ jobs:
             --repo="${{ github.repository }}"
         env:
           GITHUB_TOKEN: ${{ secrets.CUSTOM_PAT }}
-
-      #  BASIC ONE WHICH (KIND OF) WORKS
-      # - uses: actions/upload-artifact@v3
-      #   with:
-      #     name: app-v${{ env.version }}${{env.ref}}
-      #     path: ./build/bin/*`
-
-      # WITH ACTIONS
-
-      # - name: Create Release
-      #   id: create_release
-      #   uses: actions/create-release@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     tag_name: ${{ github.ref }}
-      #     release_name: Release ${{ github.ref }}
-      #     draft: false
-      #     prerelease: false
-
-      # - name: Upload Release Asset
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     asset_path: ./build/bin/linux/
-      #     asset_name: goldfish-linux
-      #     asset_content_type: application/octet-stream
