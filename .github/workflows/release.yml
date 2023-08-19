@@ -3,11 +3,8 @@ name: "Release on tag push"
 on: 
   push:
     tags:
-    - '*'
-  # workflow_dispatch:
-
-  # This Action only starts when you go to Actions and manually run the workflow.
-
+      - '*'
+      
 jobs:
   build-release:
     permissions:
