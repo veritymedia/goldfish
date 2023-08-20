@@ -46,6 +46,10 @@ jobs:
         run: |
           wails build -o goldfish-linux
 
+      - name: Make executable
+        if: matrix.platform == 'ubuntu-latest'
+        run: chmod +x /home/runner/work/goldfish/goldfish/build/bin/goldfish-linux
+
       - name: Build - windows
         if: matrix.platform == 'windows-latest'
         run: |
